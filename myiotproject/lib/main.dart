@@ -13,6 +13,7 @@ class MyApp extends StatelessWidget {
       title: 'Video Streaming App',
       theme: ThemeData(
         primarySwatch: Colors.blue,
+        scaffoldBackgroundColor: Colors.grey[100],
       ),
       home: const HomeScreen(),
       debugShowCheckedModeBanner: false,
@@ -64,13 +65,19 @@ class _HomeScreenState extends State<HomeScreen> {
           children: <Widget>[
             Container(
               margin: const EdgeInsets.only(bottom: 16.0),
-              height: 600.0,
+              height: 400.0,
               decoration: BoxDecoration(
-                border: Border.all(color: Colors.grey),
-                borderRadius: BorderRadius.circular(8.0),
+                borderRadius: BorderRadius.circular(12.0),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black26,
+                    blurRadius: 8.0,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
               ),
               child: ClipRRect(
-                borderRadius: BorderRadius.circular(8.0),
+                borderRadius: BorderRadius.circular(12.0),
                 child: Image.network(
                   'https://via.placeholder.com/800x600.png?text=Video+Stream',
                   fit: BoxFit.cover,
@@ -80,24 +87,26 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                ElevatedButton(
+            const SizedBox(height: 20.0),
+            Center(
+              child: SizedBox(
+                width: 250, // Set a specific width for the button
+                child: ElevatedButton(
                   onPressed: _toggleSecurity,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: _isSecurityOn ? Colors.red : Colors.green,
-                    padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
+                    padding: const EdgeInsets.symmetric(vertical: 12.0),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8.0),
+                      borderRadius: BorderRadius.circular(30.0),
                     ),
+                    elevation: 5,
                   ),
                   child: Text(
                     _isSecurityOn ? 'Turn Security Off' : 'Turn Security On',
-                    style: const TextStyle(fontSize: 16, color: Colors.white),
+                    style: const TextStyle(fontSize: 18, color: Colors.white),
                   ),
                 ),
-              ],
+              ),
             ),
           ],
         ),
@@ -123,6 +132,10 @@ class _NotificationScreenState extends State<NotificationScreen> {
       title: 'Camera Offline',
       description: 'The camera in the living room is offline.',
     ),
+    NotificationItemData(
+      title: 'New Message',
+      description: 'You have received a new message from John.',
+    ),
   ];
 
   void _removeNotification(int index) {
@@ -138,15 +151,33 @@ class _NotificationScreenState extends State<NotificationScreen> {
         title: const Text('Notifications'),
         backgroundColor: Colors.blueAccent,
       ),
-      body: ListView.builder(
+      body: Padding(
         padding: const EdgeInsets.all(16.0),
-        itemCount: notifications.length,
-        itemBuilder: (context, index) {
-          return NotificationItem(
-            data: notifications[index],
-            onDismiss: () => _removeNotification(index),
-          );
-        },
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'You have ${notifications.length} notifications',
+              style: const TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: Colors.black54,
+              ),
+            ),
+            const SizedBox(height: 16.0),
+            Expanded(
+              child: ListView.builder(
+                itemCount: notifications.length,
+                itemBuilder: (context, index) {
+                  return NotificationItem(
+                    data: notifications[index],
+                    onDismiss: () => _removeNotification(index),
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -176,13 +207,22 @@ class NotificationItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       margin: const EdgeInsets.only(bottom: 12.0),
-      elevation: 2.0,
+      elevation: 4.0,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12.0),
+      ),
       child: ListTile(
         contentPadding: const EdgeInsets.all(16.0),
-        title: Text(data.title, style: const TextStyle(fontWeight: FontWeight.bold)),
+        title: Text(
+          data.title,
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 16,
+          ),
+        ),
         subtitle: Text(data.description),
         trailing: IconButton(
-          icon: const Icon(Icons.close),
+          icon: const Icon(Icons.close, color: Colors.red),
           onPressed: onDismiss,
         ),
       ),
